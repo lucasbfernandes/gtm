@@ -23,29 +23,39 @@
 #define WINVER 0x0500
 #include <windows.h>
 
+/**
+    @parameters INPUT structure, WORD wVk (Key).
+    @description Function that performs the action of pressing the key specified by WORD wVk.
+**/
+void press_key(INPUT* in, WORD wVk) {
+    ///Press key specified by wvK;
+    in->ki.wVk = wVk;
+    in->ki.dwFlags = 0;
+    SendInput(1, in, sizeof(INPUT));
+
+    ///Release the key.
+    in->ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+    SendInput(1, in, sizeof(INPUT));
+}
+
 int main()
 {
     // This structure will be used to create the keyboard
     // input event.
-    INPUT ip;
-
-    // Pause for 5 seconds.
-    Sleep(5000);
+    INPUT in;
 
     // Set up a generic keyboard event.
-    ip.type = INPUT_KEYBOARD;
-    ip.ki.wScan = 0; // hardware scan code for key
-    ip.ki.time = 0;
-    ip.ki.dwExtraInfo = 0;
+    in.type = INPUT_KEYBOARD;
+    in.ki.wScan = 0; // hardware scan code for key
+    in.ki.time = 0;
+    in.ki.dwExtraInfo = 0;
 
-    // Press the "A" key
-    ip.ki.wVk = 0x41; // virtual-key code for the "a" key
-    ip.ki.dwFlags = 0; // 0 for key press
-    SendInput(1, &ip, sizeof(INPUT));
-
-    // Release the "A" key
-    ip.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
-    SendInput(1, &ip, sizeof(INPUT));
+    ///Pressing UP Arrow key.
+    int i;
+    for (i = 0; i < 200; i++) {
+        Sleep(30);
+        press_key(&in, 0x26);
+    }
 
     // Exit normally
     return 0;

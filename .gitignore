@@ -1,2 +1,2 @@
-useful_material/*.exe
-useful_material/*.o
+/useful_material/*.exe
+/useful_material/*.o

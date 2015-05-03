@@ -1,0 +1,15 @@
+# depslib dependency file v1.0
+1430681673 source:c:\users\josh g\desktop\serialinputgtm\gtm\serialcom.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+
+1430404629 source:c:\users\josh g\desktop\serialinputgtm\gtm\keystroke_input.cpp
+	<windows.h>
+
+1430404616 source:c:\users\josh g\desktop\serialinputgtm\gtm\mouse_input.cpp
+	<windows.h>
+	<stdio.h>
+	<math.h>
+	<time.h>
+

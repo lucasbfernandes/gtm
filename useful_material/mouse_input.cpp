@@ -57,6 +57,7 @@ void right_click(INPUT* in) {
     SendInput(1, in, sizeof(INPUT));
 }
 
+/*
 int main() {
     ///Creating input structure.
     INPUT in;
@@ -86,3 +87,4 @@ int main() {
 
     return 0;
 }
+*/

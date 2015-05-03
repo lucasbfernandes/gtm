@@ -1,14 +1,70 @@
+#define WINVER 0x0500
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
 
 #define ARDUINO_WAIT_TIME 2000
 
+/**
+    @parameters INPUT structure, WORD wVk (Key).
+    @description Function that performs the action of pressing the key specified by WORD wVk.
+**/
+void press_key(INPUT* in, WORD wVk) {
+    ///Press key specified by wvK;
+    in->ki.wVk = wVk;
+    in->ki.dwFlags = 0;
+    SendInput(1, in, sizeof(INPUT));
+
+    ///Release the key.
+    in->ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+    SendInput(1, in, sizeof(INPUT));
+}
+
+/*
+    // This structure will be used to create the keyboard
+    // input event.
+    INPUT in;
+
+    // Set up a generic keyboard event.
+    in.type = INPUT_KEYBOARD;
+    in.ki.wScan = 0; // hardware scan code for key
+    in.ki.time = 0;
+    in.ki.dwExtraInfo = 0;
+
+        ///Pressing UP Arrow key.
+    int i;
+    for (i = 0; i < 200; i++) {
+        Sleep(30);
+        press_key(&in, 0x26);
+    }
+
+*/
+
+void executeInput(char c) {
+    INPUT in;
+
+    // Set up a generic keyboard event.
+    in.type = INPUT_KEYBOARD;
+    in.ki.wScan = 0; // hardware scan code for key
+    in.ki.time = 0;
+    in.ki.dwExtraInfo = 0;
+
+    //press_key(&in, 0x58);
+
+    if (c == '1' || c == '2') {
+        press_key(&in, 0x25);
+    }
+    else if (c == 'B' || c == 'C') {
+        press_key(&in, 0x27);
+    }
+}
+
 int main() {
     HANDLE serialh;
     char* portName;
 
-    portName = "\\\\.\\COM3";
+    portName = "\\\\.\\COM7";
     serialh = CreateFile(
                 portName,
                 GENERIC_READ | GENERIC_WRITE,
@@ -81,8 +137,9 @@ int main() {
 
     //Reading forever
     while(1) {
+        //Input - B1axE
         //String that will contain data read sent by the microcontroller
-        char str[7] = "";
+        char str[4] = "";
         //Integer that will keep track of the position of the string that we will insert the next character read
         unsigned int currpos = 0;
         //Flag that tells if the algorithm can start reading the meaningful data from the serial port or not
@@ -98,7 +155,7 @@ int main() {
                     break;
                 }
                 //If we read the character that signals the beginning of the string block
-                else if (buffer == 'B') {
+                else if (buffer == 'S') {
                     read = 1;
                     continue;
                 }
@@ -111,7 +168,12 @@ int main() {
                 }
             }
         }
-        printf("%s\n",str);
-        Sleep(100);
+        /*printf("%s\n",str);
+        Sleep(100);*/
+
+        int i;
+        for (i = 0; i < strlen(str); i++) {
+            executeInput(str[i]);
+        }
     }
 }

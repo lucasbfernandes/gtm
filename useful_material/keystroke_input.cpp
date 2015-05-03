@@ -38,6 +38,7 @@ void press_key(INPUT* in, WORD wVk) {
     SendInput(1, in, sizeof(INPUT));
 }
 
+/*
 int main()
 {
     // This structure will be used to create the keyboard
@@ -60,3 +61,4 @@ int main()
     // Exit normally
     return 0;
 }
+*/

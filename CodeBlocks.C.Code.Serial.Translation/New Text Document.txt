@@ -1,0 +1,10 @@
+
+// Mario Kart
+http://www.letsplaysnes.com/play-super-mario-kart-online/?play=true#content
+
+
+// RF code
+http://winavr.scienceprog.com/example-avr-projects/running-tx433-and-rx433-rf-modules-with-avr-microcontrollers.html
+
+
+

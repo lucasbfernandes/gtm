@@ -4,8 +4,11 @@
 #include <stdlib.h>
 #include <windows.h>
 
-#define ARDUINO_WAIT_TIME 2000
-
+const unsigned int ARDUINO_WAIT_TIME = 2000;
+const unsigned int jump_repetitions = 5;
+const unsigned int right_repetitions = 5;
+const unsigned int left_repetitions = 5;
+const unsigned int keyboard_press_delay = 30;
 /**
     @parameters INPUT structure, WORD wVk (Key).
     @description Function that performs the action of pressing the key specified by WORD wVk.
@@ -16,34 +19,15 @@ void press_key(INPUT* in, WORD wVk) {
     in->ki.dwFlags = 0;
     SendInput(1, in, sizeof(INPUT));
 
+    Sleep(keyboard_press_delay);
+
     ///Release the key.
     in->ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
     SendInput(1, in, sizeof(INPUT));
 }
 
-/*
-    // This structure will be used to create the keyboard
-    // input event.
-    INPUT in;
-
-    // Set up a generic keyboard event.
-    in.type = INPUT_KEYBOARD;
-    in.ki.wScan = 0; // hardware scan code for key
-    in.ki.time = 0;
-    in.ki.dwExtraInfo = 0;
-
-        ///Pressing UP Arrow key.
-    int i;
-    for (i = 0; i < 200; i++) {
-        Sleep(30);
-        press_key(&in, 0x26);
-    }
-
-*/
-
 void executeInput(char c) {
     INPUT in;
-
     // Set up a generic keyboard event.
     in.type = INPUT_KEYBOARD;
     in.ki.wScan = 0; // hardware scan code for key
@@ -51,12 +35,23 @@ void executeInput(char c) {
     in.ki.dwExtraInfo = 0;
 
     //press_key(&in, 0x58);
-
     if (c == '1' || c == '2') {
-        press_key(&in, 0x25);
+        int i;
+        for (i = 0; i < left_repetitions; i++) {
+            press_key(&in, 0x25);
+        }
+    }
+    else if (c == 'Y' || c == 'Z') {
+        int i;
+        for (i = 0; i < right_repetitions; i++) {
+            press_key(&in, 0x27);
+        }
     }
     else if (c == 'B' || c == 'C') {
-        press_key(&in, 0x27);
+        int i;
+        for (i = 0; i < jump_repetitions; i++) {
+            press_key(&in, 0x58);
+        }
     }
 }
 
@@ -64,7 +59,7 @@ int main() {
     HANDLE serialh;
     char* portName;
 
-    portName = "\\\\.\\COM7";
+    portName = "\\\\.\\COM8";
     serialh = CreateFile(
                 portName,
                 GENERIC_READ | GENERIC_WRITE,
@@ -95,8 +90,8 @@ int main() {
             printf("Failed to get current serial parameters.");
         }
         else {
-            //Define serial connection parameters for the arduino board
-            dcbSerialParams.BaudRate=CBR_9600;
+            //Define serialxxxxxxxxx connection parameters for the arduino board
+            dcbSerialParams.BaudRate=CBR_2400;
             dcbSerialParams.ByteSize=8;
             dcbSerialParams.StopBits=ONESTOPBIT;
             dcbSerialParams.Parity=NOPARITY;
@@ -168,12 +163,11 @@ int main() {
                 }
             }
         }
-        /*printf("%s\n",str);
-        Sleep(100);*/
 
         int i;
-        for (i = 0; i < strlen(str); i++) {
+        for (i = strlen(str) - 1; i >= 0; i--) {
             executeInput(str[i]);
         }
     }
+    CloseHandle(serialh);
 }
